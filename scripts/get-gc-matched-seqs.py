@@ -13,11 +13,11 @@ CONTEXT_SETTINGS = {
 @click.command(no_args_is_help=True, context_settings=CONTEXT_SETTINGS)
 @click.argument(
     "human_fasta",
-    type=click.Path(exists=True, resolve_path=True, allow_dash=True),
+    type=click.Path(exists=True, resolve_path=True),
 )
 @click.argument(
     "mouse_fasta",
-    type=click.Path(exists=True, resolve_path=True, allow_dash=True),
+    type=click.Path(exists=True, resolve_path=True),
 )
 @click.option(
     "-f", "--filter-masked",
