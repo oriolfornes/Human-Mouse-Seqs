@@ -39,10 +39,25 @@ for GENOME in "GRCh38" "mm10"; do
                 "${PREFIX}.bed" > "${PREFIX}.250bp.bed"
         fi
 
+        # Subtract training data
+        if [ ! -f "${PREFIX}.250bp.subtract.bed" ]; then
+
+            if [ ${GENOME} == "GRCh38" ]
+            then
+                B="human_coordinates.hg19LiftOverHg38.bed"
+            else
+                B="mouse_coordinates.bed"
+            fi
+
+            bedtools subtract -a "${PREFIX}.250bp.bed" -b ${B} -A \
+                > "${PREFIX}.250bp.subtract.bed"
+
+        fi
+
         # Get FASTA
         if [ ! -f "${PREFIX}.250bp.fa" ]; then
             bedtools getfasta -fi ${GENOME_FA} -fo "${PREFIX}.250bp.fa" \
-                -bed "${PREFIX}.250bp.bed"
+                -bed "${PREFIX}.250bp.subtract.bed"
         fi
 
     done
@@ -59,10 +74,25 @@ for GENOME in "GRCh38" "mm10"; do
         rm "${GENOME}-random.nov.250bp.bed.tmp"
     fi
 
+    # Subtract training data
+    if [ ! -f "${GENOME}-random.nov.250bp.subtract.bed" ]; then
+
+        if [ ${GENOME} == "GRCh38" ]
+        then
+            B="human_coordinates.hg19LiftOverHg38.bed"
+        else
+            B="mouse_coordinates.bed"
+        fi
+
+        bedtools subtract -a "${GENOME}-random.nov.250bp.bed" -b ${B} -A \
+            > "${GENOME}-random.nov.250bp.subtract.bed"
+
+    fi
+
     # Get FASTA
     if [ ! -f "${GENOME}-random.nov.250bp.fa" ]; then
         bedtools getfasta -fo "${GENOME}-random.nov.250bp.fa" \
-            -fi ${GENOME_FA} -bed "${GENOME}-random.nov.250bp.bed"
+            -fi ${GENOME_FA} -bed "${GENOME}-random.nov.250bp.subtract.bed"
     fi
 
 done
